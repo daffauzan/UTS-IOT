@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Parsing Example in Table Format</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data from PHP JSON API</h1>
+    
+    <div id="suhuData">
+        <h2>Suhu Data</h2>
+        <table>
+            <tr>
+                <th>Suhu Max</th>
+                <th>Suhu Min</th>
+                <th>Suhu Rata</th>
+            </tr>
+            <tr>
+                <td id="suhumax"></td>
+                <td id="suhumin"></td>
+                <td id="suhurata"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="nilaiSuhuMaxHumidMax">
+        <h2>Nilai Suhu Max Humid Max</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Suhu</th>
+                <th>Humid</th>
+                <th>Kecerahan</th>
+                <th>Timestamp</th>
+            </tr>
+            <tbody id="nilaiTableBody"></tbody>
+        </table>
+    </div>
+
+    <div id="monthYearMax">
+        <h2>Month Year Max</h2>
+        <table>
+            <tr>
+                <th>Month-Year</th>
+            </tr>
+            <tbody id="monthYearTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        fetch('data.php')
+            .then(response => response.json())
+            .then(data => {
+                // Displaying Suhu Data in a table row
+                document.getElementById('suhumax').textContent = data.suhumax;
+                document.getElementById('suhumin').textContent = data.suhumin;
+                document.getElementById('suhurata').textContent = data.suhurata;
+
+                // Displaying Nilai Suhu Max Humid Max in table rows
+                const nilaiTableBody = document.getElementById('nilaiTableBody');
+                data.nilai_suhu_max_humid_max.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>${item.suhu}</td>
+                        <td>${item.humid}</td>
+                        <td>${item.kecerahan}</td>
+                        <td>${item.timestamp}</td>
+                    `;
+                    nilaiTableBody.appendChild(row);
+                });
+
+                // Displaying Month Year Max in table rows
+                const monthYearTableBody = document.getElementById('monthYearTableBody');
+                data.month_year_max.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${item.month_year}</td>`;
+                    monthYearTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
